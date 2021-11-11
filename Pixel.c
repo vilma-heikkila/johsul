@@ -90,8 +90,17 @@ void latch(){
 
 //Set one line (channel) as active, one at a time.
 void open_line(uint8_t x){
-
-
+	switch(x) {
+		case 0: channel|=0x01; // 0b00000001
+		case 1: channel|=0x02; // 0b00000010
+		case 2: channel|=0x04; // 0b00000100
+		case 3: channel|=0x08; // 0b00001000
+		case 4: channel|=0x10; // 0b00010000
+		case 5: channel|=0x20; // 0b00100000
+		case 6: channel|=0x40; // 0b01000000
+		case 7: channel|=0x80; // 0b10000000
+		default: channel = 0;
+	}
 }
 
 
