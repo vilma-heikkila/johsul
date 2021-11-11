@@ -50,8 +50,8 @@ void SetPixel(uint8_t x,uint8_t y, uint8_t r, uint8_t g, uint8_t b){
 	//Hint: you can invert Y-axis quite easily with 7-y
 	dots[x][y][0]=b;
 	//Write rest of two lines of code required to make this function work properly (green and red colors to array).
-
-
+	dots[x][y][1]=g;
+	dots[x][y][2]=r;
 }
 
 
