@@ -57,20 +57,34 @@ void SetPixel(uint8_t x,uint8_t y, uint8_t r, uint8_t g, uint8_t b){
 
 //Put new data to led matrix. Hint: This function is supposed to send 24-bytes and parameter x is for channel x-coordinate.
 void run(uint8_t x){
-
-
+	ctrl &=~ 0x02; // bit1 to 0
 
 	//Write code that writes data to led matrix driver (8-bit data). Use values from dots array
 	//Hint: use nested loops (loops inside loops)
 	//Hint2: loop iterations are 8,3,8 (pixels,color,8-bitdata)
+	for(uint8_t i = 0; i < 8; i++) {
 
+		for(uint8_t k = 0; k < 3; k++) {
+			uint8_t colour_data = dots[x][i][k];
 
+			for(uint8_t j; j < 8; j++) {
+				if (colour_data & 0x80) ctrl|=0x10; // if bit8 in dots is set to 1...
+				else ctrl&=~0x10;
+
+				ctrl&=~0x08; // CLK to 0
+				ctrl|=0x08;  // CLK to 1
+				colour_data<<=1;
+			}
+		}
+	}
+
+	latch();
 }
 
 //Latch signal. See colorsshield.pdf or DM163.pdf in project folder on how latching works
 void latch(){
-
-
+	ctrl |= 0x02; 	// Lat bit is bit1
+	ctrl &=~ 0x02;
 }
 
 
