@@ -16,6 +16,9 @@
 #include "xscugic.h"
 #include "xparameters.h"
 
+typedef _Bool bool;
+enum { false = 0, true = 1 };
+
 /*
  * Macro definitions
  */
