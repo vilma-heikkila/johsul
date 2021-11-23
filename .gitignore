@@ -3,3 +3,4 @@
 **/*.elf
 .metadata/
 SDK.log
+.ccls-cache
