@@ -68,12 +68,8 @@
 //***Hint: Use sleep(x)  or usleep(x) if you want some delays.****
 //***To call assembler code found in blinker.S, call it using: blinker();***
 
-
 //Comment this if you want to disable all interrupts
 #define enable_interrupts
-
-
-
 
 /***************************************************************************************
 Name:
@@ -94,41 +90,31 @@ Brief description:
 
 *****************************************************************************************/
 
-
-
-
 int main()
 {
 	//**DO NOT REMOVE THIS****
-	    init_platform();
+	init_platform();
 	//************************
 
-
 #ifdef	enable_interrupts
-	    init_interrupts();
+	init_interrupts();
 #endif
 
+	//setup screen
+	setup();
 
-	    //setup screen
-	    setup();
+	Xil_ExceptionEnable();
 
+	// My code here
 
+	//Try to avoid writing any code in the main loop.
+	while(1){
 
-	    Xil_ExceptionEnable();
+	}
 
-
-
-	    //Try to avoid writing any code in the main loop.
-		while(1){
-
-
-		}
-
-
-		cleanup_platform();
-		return 0;
+	cleanup_platform();
+	return 0;
 }
-
 
 //Timer interrupt handler for led matrix update. Frequency is 800 Hz
 void TickHandler(void *CallBackRef){
@@ -138,19 +124,13 @@ void TickHandler(void *CallBackRef){
 	//exceptions must be disabled when updating screen
 	Xil_ExceptionDisable();
 
-
-
 	//****Write code here ****
-	// aseta kaikki kanavat nollaksi
-	// kutsu run()-funktiota
-	// avataan kanava openline()
-	// globaalimuuttuja kanavan numero jota p‰ivitet‰‰n tickhandlerin ajokerroilla (0-7)
-
-
-
-
-
-
+	static uint8_t channel = 0;
+	run(channel);
+	open_line(channel);
+	usleep(100);
+	open_line(NO_LINE);
+	channel = (channel + 1) % DOTS_X;
 	//****END OF OWN CODE*****************
 
 	//*********clear timer interrupt status. DO NOT REMOVE********
@@ -161,7 +141,6 @@ void TickHandler(void *CallBackRef){
 	Xil_ExceptionEnable();
 }
 
-
 //Timer interrupt for moving alien, shooting... Frequency is 10 Hz by default
 void TickHandler1(void *CallBackRef){
 
@@ -170,17 +149,12 @@ void TickHandler1(void *CallBackRef){
 
 	//****Write code here ****
 	// esim globaaliin muuttujaan alienin sijainti, joka kutsuntakerralla muutetaan arvoa
-
-
-
-
 	//****END OF OWN CODE*****************
+	//
 	//clear timer interrupt status. DO NOT REMOVE
 	StatusEvent = XTtcPs_GetInterruptStatus((XTtcPs *)CallBackRef);
 	XTtcPs_ClearInterruptStatus((XTtcPs *)CallBackRef, StatusEvent);
-
 }
-
 
 //Interrupt handler for switches and buttons.
 //Reading Status will tell which button or switch was used
@@ -194,15 +168,6 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
 	if(Status==0x01){
 
 	}
-
-
-
-
-
-
-
-
 	//****END OF OWN CODE*****************
 }
-
 

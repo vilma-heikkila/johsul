@@ -41,6 +41,7 @@ enum { false = 0, true = 1 };
 
 // LED matrix channels
 #define CHANNEL ((uint8_t*) 0x41220008)
+#define NO_LINE 8
 
 // Control signals
 #define CTRL ((uint8_t*) 0x41220008)
