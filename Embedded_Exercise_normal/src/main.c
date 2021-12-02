@@ -106,6 +106,9 @@ int main()
 	Xil_ExceptionEnable();
 
 	// My code here
+	// Setting up game
+	set_alien_pixels();
+	set_ship_pixels();
 
 	//Try to avoid writing any code in the main loop.
 	while(1){
@@ -148,7 +151,8 @@ void TickHandler1(void *CallBackRef){
 	uint32_t StatusEvent;
 
 	//****Write code here ****
-	// esim globaaliin muuttujaan alienin sijainti, joka kutsuntakerralla muutetaan arvoa
+	reset_alien_pixels();
+	move_alien();
 	//****END OF OWN CODE*****************
 	//
 	//clear timer interrupt status. DO NOT REMOVE
@@ -164,9 +168,26 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
 
 	//Hint: Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
 
+	// btn3 -> move ship left?
+	// btn2 -> move ship right?
+
 	//If true, btn0 was used to trigger interrupt
 	if(Status==0x01){
 
+	}
+
+	if(Status==0x08) {
+		if(ship_move_ok(LEFT)) {
+			reset_ship_pixels();
+			move_ship(LEFT);
+		}
+	}
+
+	if(Status==0x04) {
+		if(ship_move_ok(RIGHT)) {
+			reset_ship_pixels();
+			move_ship(RIGHT);
+		}
 	}
 	//****END OF OWN CODE*****************
 }

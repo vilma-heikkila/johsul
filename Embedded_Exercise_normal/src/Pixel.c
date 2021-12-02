@@ -93,3 +93,69 @@ void open_line(uint8_t x){
 	*CHANNEL = bit(x);
 }
 
+void set_alien_pixels() {
+	SetPixel(ALIEN_LOC, 0, 255, 0, 0);
+}
+
+void reset_alien_pixels() {
+	SetPixel(ALIEN_LOC, 0, 0, 0, 0);
+}
+
+void check_alien_direction() {
+	if (ALIEN_LOC + 1 > 7) {
+		ALIEN_DIR = LEFT;
+	}
+
+	if (ALIEN_LOC - 1 < 0) {
+		ALIEN_DIR = RIGHT;
+	}
+}
+
+void move_alien() {
+	check_alien_direction();
+
+	ALIEN_LOC += ALIEN_DIR;
+
+	set_alien_pixels();
+}
+
+void set_ship_pixels() {
+	// Pixels for ship   O
+	//                 O O O
+	SetPixel(SHIP_LOC, 7, 0, 0, 255);
+	SetPixel(SHIP_LOC-1, 7, 0, 0, 255);
+	SetPixel(SHIP_LOC+1, 7, 0, 0, 255);
+	SetPixel(SHIP_LOC, 6, 0, 0, 255);
+}
+
+void reset_ship_pixels() {
+	SetPixel(SHIP_LOC, 7, 0, 0, 0);
+	SetPixel(SHIP_LOC-1, 7, 0, 0, 0);
+	SetPixel(SHIP_LOC+1, 7, 0, 0, 0);
+	SetPixel(SHIP_LOC, 6, 0, 0, 0);
+}
+
+_Bool ship_move_ok(uint8_t direction) {
+	if (direction == LEFT) {
+		if (SHIP_LOC - 1 < 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	else {
+		if (SHIP_LOC + 1 > 7) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+}
+
+void move_ship(uint8_t direction) {
+	SHIP_LOC += direction;
+	set_ship_pixels();
+}
