@@ -99,7 +99,7 @@ void move_alien();
 
 void set_ship_pixels();
 void reset_ship_pixels();
-_Bool ship_move_ok(uint8_t direction);
+bool ship_move_ok(uint8_t direction);
 void move_ship(uint8_t direction);
 
 

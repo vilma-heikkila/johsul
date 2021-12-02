@@ -135,7 +135,7 @@ void reset_ship_pixels() {
 	SetPixel(SHIP_LOC, 6, 0, 0, 0);
 }
 
-_Bool ship_move_ok(uint8_t direction) {
+bool ship_move_ok(uint8_t direction) {
 	if (direction == LEFT) {
 		if (SHIP_LOC - 1 < 0) {
 			return false;
