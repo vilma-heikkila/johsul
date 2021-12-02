@@ -55,7 +55,7 @@ enum { false = 0, true = 1 };
 #define INPUT ((uint8_t*) 0xe000a068)
 #define INPUT_BTN0 bit(0)
 #define INPUT_BTN1 bit(1)
-#define INPUT_BTN2 bit(2)
+#define INPUT_BTN2 bit(2)§
 #define INPUT_BTN3 bit(3)
 #define INPUT_SW0  bit(4)
 #define INPUT_SW1  bit(5)
@@ -82,8 +82,17 @@ uint8_t ALIEN_DIR = 1; 	// 1 = right, -1 = left
 
 uint8_t SHIP_LOC = 3;
 
+uint8_t PROJECTILE_X = 0;
+uint8_t PROJECTILE_Y = 5;
+bool SHOOT_ACTIVE = false;
+
 uint8_t LEFT = -1;
 uint8_t RIGHT = 1;
+
+uint8_t SCORE = 0;
+uint8_t MAX_SCORE = 2;
+
+bool GAME_END = false;
 
 void setup();
 void SetPixel(uint8_t x,uint8_t y, uint8_t r, uint8_t g, uint8_t b);
@@ -102,5 +111,16 @@ void reset_ship_pixels();
 bool ship_move_ok(uint8_t direction);
 void move_ship(uint8_t direction);
 
+void check_hit();
+void set_projectile_pixels();
+void reset_projectile_pixels();
+void move_projectile();
+
+void set_score_pixels(uint8_t score);
+void reset_all_pixels();
+
+void set_end_pixels();
+
+void restart_game();
 
 #endif /* PIXEL_H_ */

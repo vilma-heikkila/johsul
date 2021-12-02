@@ -153,6 +153,18 @@ void TickHandler1(void *CallBackRef){
 	//****Write code here ****
 	reset_alien_pixels();
 	move_alien();
+
+	if (SHOOT_ACTIVE) {
+		reset_projectile_pixels();
+		move_projectile();
+	}
+
+	if (GAME_END) {
+		usleep(500);
+		reset_alien_pixels();
+		reset_ship_pixels();
+		set_end_pixels();
+	}
 	//****END OF OWN CODE*****************
 	//
 	//clear timer interrupt status. DO NOT REMOVE
@@ -170,25 +182,35 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
 
 	// btn3 -> move ship left?
 	// btn2 -> move ship right?
-
-	//If true, btn0 was used to trigger interrupt
-	if(Status==0x01){
-
-	}
+	// btn1 -> shoot?
+	// btn0 -> restart?
 
 	if(Status==0x08) {
-		if(ship_move_ok(LEFT)) {
+		if(ship_move_ok(LEFT) && !GAME_END) {
 			reset_ship_pixels();
 			move_ship(LEFT);
 		}
 	}
 
 	if(Status==0x04) {
-		if(ship_move_ok(RIGHT)) {
+		if(ship_move_ok(RIGHT) && !GAME_END) {
 			reset_ship_pixels();
 			move_ship(RIGHT);
 		}
 	}
+
+	if(Status==0x02) {
+		if(!SHOOT_ACTIVE && !GAME_END) {
+			SHOOT_ACTIVE = true;
+			PROJECTILE_X = SHIP_LOC;
+			set_projectile_pixels();
+		}
+	}
+
+	if(Status==0x01){
+		restart_game();
+		}
+
 	//****END OF OWN CODE*****************
 }
 

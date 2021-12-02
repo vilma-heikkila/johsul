@@ -120,8 +120,9 @@ void move_alien() {
 }
 
 void set_ship_pixels() {
-	// Pixels for ship   O
-	//                 O O O
+	//      O
+	//    O O O
+
 	SetPixel(SHIP_LOC, 7, 0, 0, 255);
 	SetPixel(SHIP_LOC-1, 7, 0, 0, 255);
 	SetPixel(SHIP_LOC+1, 7, 0, 0, 255);
@@ -157,5 +158,77 @@ bool ship_move_ok(uint8_t direction) {
 
 void move_ship(uint8_t direction) {
 	SHIP_LOC += direction;
+	set_ship_pixels();
+}
+
+void check_hit() {
+	if (ALIEN_LOC == PROJECTILE_X) {
+		SCORE++;
+		set_score_pixels(SCORE);
+	}
+	if (SCORE == MAX_SCORE) {
+		GAME_END = true;
+	}
+
+}
+
+void set_projectile_pixels() {
+	SetPixel(PROJECTILE_X, PROJECTILE_Y, 0, 255, 0);
+}
+
+void reset_projectile_pixels() {
+	SetPixel(PROJECTILE_X, PROJECTILE_Y, 0, 0, 0);
+}
+
+void move_projectile() {
+	PROJECTILE_Y--;
+	if (PROJECTILE_Y == 0) {
+		check_hit();
+		PROJECTILE_Y = 5;
+		SHOOT_ACTIVE = false;
+	}
+
+	else {
+		set_projectile_pixels();
+	}
+}
+
+void set_score_pixels(uint8_t score) {
+	SetPixel(7, score, 0, 255, 0);
+}
+
+void reset_all_pixels() {
+	for (uint8_t x = 0; x < 7; x++) {
+		for (uint8_t y = 0; y < 7; y++) {
+			SetPixel(x, y, 0, 0, 0);
+		}
+	}
+}
+
+void set_end_pixels() {
+	SetPixel(2, 2, 0, 255, 0);
+	SetPixel(3, 3, 0, 255, 0);
+	SetPixel(5, 2, 0, 255, 0);
+	SetPixel(4, 3, 0, 255, 0);
+	SetPixel(3, 4, 0, 255, 0);
+	SetPixel(4, 4, 0, 255, 0);
+	SetPixel(2, 5, 0, 255, 0);
+	SetPixel(5, 5, 0, 255, 0);
+}
+
+void restart_game() {
+	reset_all_pixels();
+
+	// Set initial values
+	ALIEN_LOC = 3;
+	ALIEN_DIR = 1;
+	SHIP_LOC = 3;
+	PROJECTILE_X = 0;
+	PROJECTILE_Y = 5;
+	SCORE = 0;
+	SHOOT_ACTIVE = false;
+	GAME_END = false;
+
+	set_alien_pixels();
 	set_ship_pixels();
 }
