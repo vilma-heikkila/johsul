@@ -58,8 +58,9 @@
 #include "xttcps.h"
 #include "xscugic.h"
 #include "xparameters.h"
-#include "Pixel.h"
+#include "pixel.h"
 #include "Interrupt_setup.h"
+#include "game.h"
 
 //********************************************************************
 //***************TRY TO READ COMMENTS*********************************
@@ -90,6 +91,15 @@ Brief description:
 
 *****************************************************************************************/
 
+
+struct Game* game = &(struct Game) {
+	.alien = &(struct Alien) { .location = 0, .direction = LEFT },
+	.ship = &(struct Ship) { .location = 0, .shoot_active = false },
+	.projectile = &(struct Projectile) { .x = 0, .y = 0 },
+	.score = 0,
+	.end = true,
+};
+
 int main()
 {
 	//**DO NOT REMOVE THIS****
@@ -107,8 +117,8 @@ int main()
 
 	// My code here
 	// Setting up game
-	set_alien_pixels();
-	set_ship_pixels();
+	set_alien_pixels(game->alien);
+	set_ship_pixels(game->ship);
 
 	//Try to avoid writing any code in the main loop.
 	while(1){
@@ -151,18 +161,18 @@ void TickHandler1(void *CallBackRef){
 	uint32_t StatusEvent;
 
 	//****Write code here ****
-	reset_alien_pixels();
-	move_alien();
+	reset_alien_pixels(game->alien);
+	move_alien(game->alien);
 
-	if (SHOOT_ACTIVE) {
-		reset_projectile_pixels();
-		move_projectile();
+	if (game->ship->shoot_active) {
+		reset_projectile_pixels(game->projectile);
+		move_projectile(game->projectile);
 	}
 
-	if (GAME_END) {
+	if (game->end) {
 		usleep(500);
-		reset_alien_pixels();
-		reset_ship_pixels();
+		reset_alien_pixels(game->alien);
+		reset_ship_pixels(game->ship);
 		set_end_pixels();
 	}
 	//****END OF OWN CODE*****************
@@ -175,7 +185,7 @@ void TickHandler1(void *CallBackRef){
 //Interrupt handler for switches and buttons.
 //Reading Status will tell which button or switch was used
 //Bank information is useless in this exercise
-void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
+void ButtonHandler(void *CallBackRef, u32 bank, u32 status){
 	//****Write code here ****
 
 	//Hint: Status==0x01 ->btn0, Status==0x02->btn1, Status==0x04->btn2, Status==0x08-> btn3, Status==0x10->SW0, Status==0x20 -> SW1
@@ -185,32 +195,28 @@ void ButtonHandler(void *CallBackRef, u32 Bank, u32 Status){
 	// btn1 -> shoot?
 	// btn0 -> restart?
 
-	if(Status==0x08) {
-		if(ship_move_ok(LEFT) && !GAME_END) {
+	if (status & BTN_LEFT) {
+		if (ship_move_ok(game->ship, LEFT) && !game->end) {
 			reset_ship_pixels();
-			move_ship(LEFT);
+			move_ship(game->ship, LEFT);
 		}
 	}
-
-	if(Status==0x04) {
-		if(ship_move_ok(RIGHT) && !GAME_END) {
+	if (status & BTN_RIGHT) {
+		if (ship_move_ok(game->ship, RIGHT) && !game->end) {
 			reset_ship_pixels();
-			move_ship(RIGHT);
+			move_ship(game->ship, RIGHT);
 		}
 	}
-
-	if(Status==0x02) {
-		if(!SHOOT_ACTIVE && !GAME_END) {
-			SHOOT_ACTIVE = true;
-			PROJECTILE_X = SHIP_LOC;
-			set_projectile_pixels();
+	if (status & BTN_SHOOT) {
+		if (game->ship->shoot_active && !game->end) {
+			game->ship->shoot_active = true;
+			game->projectile->x = game->ship->location;
+			set_projectile_pixels(game->projectile);
 		}
 	}
-
-	if(Status==0x01){
-		restart_game();
-		}
-
+	if (status & BTN_RESTART) {
+		restart_game(game);
+	}
 	//****END OF OWN CODE*****************
 }
 

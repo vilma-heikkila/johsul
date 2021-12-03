@@ -76,51 +76,10 @@ enum { false = 0, true = 1 };
 #define BOARD_LED5_G bit(4)
 #define BOARD_LED5_R bit(5)
 
-// Interrupt handler global variables
-uint8_t ALIEN_LOC = 3;
-uint8_t ALIEN_DIR = 1; 	// 1 = right, -1 = left
-
-uint8_t SHIP_LOC = 3;
-
-uint8_t PROJECTILE_X = 0;
-uint8_t PROJECTILE_Y = 5;
-bool SHOOT_ACTIVE = false;
-
-uint8_t LEFT = -1;
-uint8_t RIGHT = 1;
-
-uint8_t SCORE = 0;
-uint8_t MAX_SCORE = 2;
-
-bool GAME_END = false;
-
 void setup();
 void SetPixel(uint8_t x,uint8_t y, uint8_t r, uint8_t g, uint8_t b);
 void run(uint8_t x);
 void latch();
 void open_line(uint8_t x);
-
-// Game functionality
-void set_alien_pixels();
-void reset_alien_pixels();
-void check_alien_direction();
-void move_alien();
-
-void set_ship_pixels();
-void reset_ship_pixels();
-bool ship_move_ok(uint8_t direction);
-void move_ship(uint8_t direction);
-
-void check_hit();
-void set_projectile_pixels();
-void reset_projectile_pixels();
-void move_projectile();
-
-void set_score_pixels(uint8_t score);
-void reset_all_pixels();
-
-void set_end_pixels();
-
-void restart_game();
 
 #endif /* PIXEL_H_ */
